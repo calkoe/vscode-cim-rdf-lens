@@ -10,6 +10,10 @@ point at one another. The relationship lives in the UUID:
                                                           ^- reference to it
 ```
 
+The extension registers `.rdf`, `.rdfs` and `.owl` with the built-in XML
+language -- so these files also get XML syntax highlighting, which VS Code does
+not otherwise offer for them.
+
 Both get the same colour -- as a bar in the **gutter** (the code margin) and as a
 coloured **underline beneath the UUID** itself. The XML syntax highlighting stays
 untouched: no token is recoloured, no background is tinted, only the underline is
@@ -37,7 +41,7 @@ another across all lines.
 
 ## Underlines
 
-Where a single line *points* is told not by the bars but by the underline: every
+Where a single line _points_ is told not by the bars but by the underline: every
 UUID in the text is underlined in the colour of the object it means -- the
 `rdf:about` just as much as every `rdf:resource` that points at it. Only the
 identifier is underlined, not the `urn:uuid:` prefix and not the quotation marks.
@@ -60,9 +64,9 @@ Can be switched off via `cimRdfLens.underlineIds`.
 An `rdf:resource` edge points from child to parent: `AnalogLimit` names its
 `LimitSet`, the set its `Measurements`, the measurement its
 `PowerSystemResource`. Follow the edges and you walk to the root; an object with
-no resolvable reference *is* a root.
+no resolvable reference _is_ a root.
 
-That yields a DAG, not a tree -- `cim:Analog` hangs off the Terminal *and*
+That yields a DAG, not a tree -- `cim:Analog` hangs off the Terminal _and_
 directly off the equipment. The bar order needs a single path, so the longest one
 wins: `Breaker > Terminal > Analog` rather than `Breaker > Analog`. That way you
 see the deepest nesting and not the one that happened to come first. Cycles are
@@ -70,47 +74,29 @@ detected and capped.
 
 ## In addition
 
-* **Hover** over a UUID: class, name, the whole hierarchy with colour swatches,
+- **Hover** over a UUID: class, name, the whole hierarchy with colour swatches,
   the count of incoming references.
-* **Go to definition** (F12 / Ctrl+click) from an `rdf:resource` line to the
+- **Go to definition** (F12 / Ctrl+click) from an `rdf:resource` line to the
   matching `rdf:about` block.
-* **Find all references** (Shift+F12) on an object.
+- **Find all references** (Shift+F12) on an object.
 
-## Installation
-
-To try it out without building a package: open this folder in VS Code and press
-**F5**. It launches a second window with the extension loaded and
-`leistungsschalter.rdf` open. There are no dependencies and no build step --
-`npm install` is not needed.
-
-To install permanently:
-
-```bash
-npx @vscode/vsce package          # produces cim-rdf-lens-0.1.0.vsix
-code --install-extension cim-rdf-lens-0.1.0.vsix
-```
-
-The extension registers `.rdf`, `.rdfs` and `.owl` with the built-in XML
-language -- so these files also get XML syntax highlighting, which VS Code does
-not otherwise offer for them.
+## Settings
 
 > The bars need the glyph margin. If nothing appears:
 > `"editor.glyphMargin": true` (the default).
 
-## Settings
-
-| Setting | Default | Effect |
-| --- | --- | --- |
-| `cimRdfLens.enabled` | `true` | Show the bars |
-| `cimRdfLens.fileExtensions` | `[".rdf"]` | Which files get coloured |
-| `cimRdfLens.palette` | 12 colours | Base palette; if it runs short, it is extended along the golden angle |
-| `cimRdfLens.ancestorOpacity` | `1` | Opacity of the ancestor bars. Smaller values mix with the background and make the mapping harder |
-| `cimRdfLens.barWidth` | `0.66` | Bar width relative to its column |
-| `cimRdfLens.maxColumns` | `8` | Maximum number of bars side by side; deeper chains are truncated in the middle |
-| `cimRdfLens.underlineIds` | `true` | Underline UUIDs in the text in colour |
-| `cimRdfLens.underlineWidth` | `2` | Underline thickness in pixels |
-| `cimRdfLens.markReferences` | `false` | Extra bar on `rdf:resource` lines; breaks the continuous block bars |
-| `cimRdfLens.overviewRuler` | `true` | Marker next to the scroll bar |
+| Setting                      | Default    | Effect                                                                                           |
+| ---------------------------- | ---------- | ------------------------------------------------------------------------------------------------ |
+| `cimRdfLens.enabled`         | `true`     | Show the bars                                                                                    |
+| `cimRdfLens.fileExtensions`  | `[".rdf"]` | Which files get coloured                                                                         |
+| `cimRdfLens.palette`         | 12 colours | Base palette; if it runs short, it is extended along the golden angle                            |
+| `cimRdfLens.ancestorOpacity` | `1`        | Opacity of the ancestor bars. Smaller values mix with the background and make the mapping harder |
+| `cimRdfLens.barWidth`        | `0.66`     | Bar width relative to its column                                                                 |
+| `cimRdfLens.maxColumns`      | `8`        | Maximum number of bars side by side; deeper chains are truncated in the middle                   |
+| `cimRdfLens.underlineIds`    | `true`     | Underline UUIDs in the text in colour                                                            |
+| `cimRdfLens.underlineWidth`  | `2`        | Underline thickness in pixels                                                                    |
+| `cimRdfLens.markReferences`  | `false`    | Extra bar on `rdf:resource` lines; breaks the continuous block bars                              |
+| `cimRdfLens.overviewRuler`   | `true`     | Marker next to the scroll bar                                                                    |
 
 Commands: **CIM/RDF Lens: Toggle bars**, **CIM/RDF Lens: Recolour**.
 
@@ -118,7 +104,7 @@ Commands: **CIM/RDF Lens: Toggle bars**, **CIM/RDF Lens: Recolour**.
 
 ```bash
 node --test "test/*.test.js"                              # 15 tests, no dependencies
-node scripts/preview.js ../../contracts/model/leistungsschalter.rdf
+node scripts/preview.js leistungsschalter.example.rdf
 ```
 
 `preview.js` draws the same bars with ANSI colours into the terminal -- for a
@@ -132,12 +118,12 @@ editor.
 
 ## Known limits
 
-* VS Code draws **one** gutter icon per line. Stacked bars therefore have to
+- VS Code draws **one** gutter icon per line. Stacked bars therefore have to
   live in a single SVG; accordingly one decoration type is created per occurring
   bar sequence (not per line).
-* The parser reads attributes, not a DOM. `rdf:nodeID`, nested anonymous nodes
+- The parser reads attributes, not a DOM. `rdf:nodeID`, nested anonymous nodes
   and relationships via `rdf:parseType="Collection"` are not captured -- for CIM
   instance graphs, which use `rdf:about`/`rdf:resource` throughout, that is
   enough.
-* Relationships across file boundaries are not resolved; a reference to an
+- Relationships across file boundaries are not resolved; a reference to an
   object in another file stays colourless.
