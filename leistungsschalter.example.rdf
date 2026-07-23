@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  leistungsschalter.rdf – CIM-Instanzgraph des Leistungsschalters LS-DUMMY-01.
+
+  Aufbau je Messgroesse – alles Standardklassen aus dem CIM-Meas-Paket
+  (IEC 61970-301):
+
+    cim:Analog        eine analoge Messgroesse; Einheit als
+                      Measurement.unitSymbol + Measurement.unitMultiplier
+                      (none/k/M ... -> A, kV, MW)
+    cim:AnalogLimitSet / cim:AnalogLimit
+                      die Grenzwerte dieser Messgroesse. IdentifiedObject.name
+                      des Limits ist der Maschinenschluessel "min" bzw. "max",
+                      IdentifiedObject.aliasName die Klartextbedeutung.
+                      Nur max  -> Obergrenzenpruefung
+                      min+max  -> Bereichspruefung
+                      kein Set -> keine Grenzwertpruefung
+    cim:Discrete      eine Meldung; die zulaessigen Zustaende stehen als
+    cim:ValueAliasSet / cim:ValueToAlias
+                      Code <-> Klartext. Fuer breaker_position ist der Code
+                      exakt die IEC-60870-5-Doppelpunktinformation (DPI), also
+                      derselbe Zahlenwert, den der process-adapter vom
+                      Protokoll bekommt und in cim:DiscreteValue.value schreibt.
+
+  Der Namensraum grid: ist die einzige Projekterweiterung. Er markiert mit
+  grid:alarmState, welche Zustaende einer Meldung betrieblich ein Alarm sind
+  (INTERMEDIATE/FAULTY); das CIM-Meas-Paket kennt dafuer keine Eigenschaft.
+-->
+<rdf:RDF
+  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+  xmlns:cim="http://iec.ch/TC57/CIM100#"
+  xmlns:grid="http://grid-hackathon.local/model#"
+>
+
+  <!-- ===================================================================
+       Anlage: der Leistungsschalter und sein Terminal
+       =================================================================== -->
+
+  <cim:Breaker rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000001">
+    <cim:IdentifiedObject.mRID>4a1e39c2-8a5b-4f60-9f1a-c0de00000001</cim:IdentifiedObject.mRID>
+    <cim:IdentifiedObject.name>LS-DUMMY-01</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.description>Hochspannungs-Leistungsschalter in einem Schaltfeld</cim:IdentifiedObject.description>
+  </cim:Breaker>
+
+  <cim:Terminal rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000002">
+    <cim:IdentifiedObject.mRID>4a1e39c2-8a5b-4f60-9f1a-c0de00000002</cim:IdentifiedObject.mRID>
+    <cim:IdentifiedObject.name>LS-DUMMY-01-T1</cim:IdentifiedObject.name>
+    <cim:Terminal.ConductingEquipment rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000001"/>
+  </cim:Terminal>
+
+  <!-- ===================================================================
+       Messgroesse: Strom am Abgang, Obergrenzenpruefung bei 1300 A
+       =================================================================== -->
+
+  <cim:Analog rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000011">
+    <cim:IdentifiedObject.mRID>4a1e39c2-8a5b-4f60-9f1a-c0de00000011</cim:IdentifiedObject.mRID>
+    <cim:IdentifiedObject.name>current_a</cim:IdentifiedObject.name>
+    <cim:Measurement.measurementType>LineCurrent</cim:Measurement.measurementType>
+    <cim:Measurement.unitSymbol rdf:resource="http://iec.ch/TC57/CIM100#UnitSymbol.A"/>
+    <cim:Measurement.unitMultiplier rdf:resource="http://iec.ch/TC57/CIM100#UnitMultiplier.none"/>
+    <cim:Measurement.Terminal rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000002"/>
+    <cim:Measurement.PowerSystemResource rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000001"/>
+  </cim:Analog>
+
+  <cim:AnalogLimitSet rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000031">
+    <cim:IdentifiedObject.name>current_a-limits</cim:IdentifiedObject.name>
+    <cim:AnalogLimitSet.Measurements rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000011"/>
+  </cim:AnalogLimitSet>
+
+  <cim:AnalogLimit rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000041">
+    <cim:IdentifiedObject.name>max</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Obergrenze Dauerstrom</cim:IdentifiedObject.aliasName>
+    <cim:AnalogLimit.value rdf:datatype="http://www.w3.org/2001/XMLSchema#float">1300.00</cim:AnalogLimit.value>
+    <cim:Limit.LimitSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000031"/>
+  </cim:AnalogLimit>
+
+  <!-- ===================================================================
+       Messgroesse: Spannung, Bereichspruefung 375 kV .. 385 kV
+       =================================================================== -->
+
+  <cim:Analog rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000012">
+    <cim:IdentifiedObject.mRID>4a1e39c2-8a5b-4f60-9f1a-c0de00000012</cim:IdentifiedObject.mRID>
+    <cim:IdentifiedObject.name>voltage_kv</cim:IdentifiedObject.name>
+    <cim:Measurement.measurementType>LineToLineVoltage</cim:Measurement.measurementType>
+    <cim:Measurement.unitSymbol rdf:resource="http://iec.ch/TC57/CIM100#UnitSymbol.V"/>
+    <cim:Measurement.unitMultiplier rdf:resource="http://iec.ch/TC57/CIM100#UnitMultiplier.k"/>
+    <cim:Measurement.Terminal rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000002"/>
+    <cim:Measurement.PowerSystemResource rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000001"/>
+  </cim:Analog>
+
+  <cim:AnalogLimitSet rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000032">
+    <cim:IdentifiedObject.name>voltage_kv-limits</cim:IdentifiedObject.name>
+    <cim:AnalogLimitSet.Measurements rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000012"/>
+  </cim:AnalogLimitSet>
+
+  <cim:AnalogLimit rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000042">
+    <cim:IdentifiedObject.name>min</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Untergrenze Betriebsspannung</cim:IdentifiedObject.aliasName>
+    <cim:AnalogLimit.value rdf:datatype="http://www.w3.org/2001/XMLSchema#float">375.00</cim:AnalogLimit.value>
+    <cim:Limit.LimitSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000032"/>
+  </cim:AnalogLimit>
+
+  <cim:AnalogLimit rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000043">
+    <cim:IdentifiedObject.name>max</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Obergrenze Betriebsspannung</cim:IdentifiedObject.aliasName>
+    <cim:AnalogLimit.value rdf:datatype="http://www.w3.org/2001/XMLSchema#float">385.00</cim:AnalogLimit.value>
+    <cim:Limit.LimitSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000032"/>
+  </cim:AnalogLimit>
+
+  <!-- ===================================================================
+       Messgroesse: Frequenz, Bereichspruefung 49,90 Hz .. 50,10 Hz
+       =================================================================== -->
+
+  <cim:Analog rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000013">
+    <cim:IdentifiedObject.mRID>4a1e39c2-8a5b-4f60-9f1a-c0de00000013</cim:IdentifiedObject.mRID>
+    <cim:IdentifiedObject.name>frequency_hz</cim:IdentifiedObject.name>
+    <cim:Measurement.measurementType>Frequency</cim:Measurement.measurementType>
+    <cim:Measurement.unitSymbol rdf:resource="http://iec.ch/TC57/CIM100#UnitSymbol.Hz"/>
+    <cim:Measurement.unitMultiplier rdf:resource="http://iec.ch/TC57/CIM100#UnitMultiplier.none"/>
+    <cim:Measurement.Terminal rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000002"/>
+    <cim:Measurement.PowerSystemResource rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000001"/>
+  </cim:Analog>
+
+  <cim:AnalogLimitSet rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000033">
+    <cim:IdentifiedObject.name>frequency_hz-limits</cim:IdentifiedObject.name>
+    <cim:AnalogLimitSet.Measurements rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000013"/>
+  </cim:AnalogLimitSet>
+
+  <cim:AnalogLimit rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000044">
+    <cim:IdentifiedObject.name>min</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Untergrenze Netzfrequenz</cim:IdentifiedObject.aliasName>
+    <cim:AnalogLimit.value rdf:datatype="http://www.w3.org/2001/XMLSchema#float">49.90</cim:AnalogLimit.value>
+    <cim:Limit.LimitSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000033"/>
+  </cim:AnalogLimit>
+
+  <cim:AnalogLimit rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000045">
+    <cim:IdentifiedObject.name>max</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Obergrenze Netzfrequenz</cim:IdentifiedObject.aliasName>
+    <cim:AnalogLimit.value rdf:datatype="http://www.w3.org/2001/XMLSchema#float">50.10</cim:AnalogLimit.value>
+    <cim:Limit.LimitSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000033"/>
+  </cim:AnalogLimit>
+
+  <!-- ===================================================================
+       Messgroesse: Wirkleistung, Obergrenzenpruefung bei 860 MW
+       =================================================================== -->
+
+  <cim:Analog rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000014">
+    <cim:IdentifiedObject.mRID>4a1e39c2-8a5b-4f60-9f1a-c0de00000014</cim:IdentifiedObject.mRID>
+    <cim:IdentifiedObject.name>active_power_mw</cim:IdentifiedObject.name>
+    <cim:Measurement.measurementType>ThreePhaseActivePower</cim:Measurement.measurementType>
+    <cim:Measurement.unitSymbol rdf:resource="http://iec.ch/TC57/CIM100#UnitSymbol.W"/>
+    <cim:Measurement.unitMultiplier rdf:resource="http://iec.ch/TC57/CIM100#UnitMultiplier.M"/>
+    <cim:Measurement.Terminal rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000002"/>
+    <cim:Measurement.PowerSystemResource rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000001"/>
+  </cim:Analog>
+
+  <cim:AnalogLimitSet rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000034">
+    <cim:IdentifiedObject.name>active_power_mw-limits</cim:IdentifiedObject.name>
+    <cim:AnalogLimitSet.Measurements rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000014"/>
+  </cim:AnalogLimitSet>
+
+  <cim:AnalogLimit rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000046">
+    <cim:IdentifiedObject.name>max</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Obergrenze Wirkleistung</cim:IdentifiedObject.aliasName>
+    <cim:AnalogLimit.value rdf:datatype="http://www.w3.org/2001/XMLSchema#float">860.00</cim:AnalogLimit.value>
+    <cim:Limit.LimitSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000034"/>
+  </cim:AnalogLimit>
+
+  <!-- ===================================================================
+       Meldung: Schalterstellung als Doppelmeldung (DPI)
+       Die Codes 0..3 sind die IEC-60870-5-Doppelpunktinformation und stehen
+       unveraendert in cim:DiscreteValue.value.
+       =================================================================== -->
+
+  <cim:Discrete rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000021">
+    <cim:IdentifiedObject.mRID>4a1e39c2-8a5b-4f60-9f1a-c0de00000021</cim:IdentifiedObject.mRID>
+    <cim:IdentifiedObject.name>breaker_position</cim:IdentifiedObject.name>
+    <cim:Measurement.measurementType>SwitchPosition</cim:Measurement.measurementType>
+    <cim:Measurement.PowerSystemResource rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000001"/>
+    <cim:Discrete.ValueAliasSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000051"/>
+  </cim:Discrete>
+
+  <cim:ValueAliasSet rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000051">
+    <cim:IdentifiedObject.name>DPI</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.description>Doppelpunktinformation nach IEC 60870-5</cim:IdentifiedObject.description>
+  </cim:ValueAliasSet>
+
+  <cim:ValueToAlias rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000061">
+    <cim:IdentifiedObject.name>INTERMEDIATE</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Zwischenstellung</cim:IdentifiedObject.aliasName>
+    <cim:ValueToAlias.value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">0</cim:ValueToAlias.value>
+    <cim:ValueToAlias.ValueAliasSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000051"/>
+    <grid:alarmState rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</grid:alarmState>
+  </cim:ValueToAlias>
+
+  <cim:ValueToAlias rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000062">
+    <cim:IdentifiedObject.name>OPEN</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Schalter offen</cim:IdentifiedObject.aliasName>
+    <cim:ValueToAlias.value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">1</cim:ValueToAlias.value>
+    <cim:ValueToAlias.ValueAliasSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000051"/>
+    <grid:alarmState rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</grid:alarmState>
+  </cim:ValueToAlias>
+
+  <cim:ValueToAlias rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000063">
+    <cim:IdentifiedObject.name>CLOSED</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Schalter geschlossen</cim:IdentifiedObject.aliasName>
+    <cim:ValueToAlias.value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">2</cim:ValueToAlias.value>
+    <cim:ValueToAlias.ValueAliasSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000051"/>
+    <grid:alarmState rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">false</grid:alarmState>
+  </cim:ValueToAlias>
+
+  <cim:ValueToAlias rdf:about="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000064">
+    <cim:IdentifiedObject.name>FAULTY</cim:IdentifiedObject.name>
+    <cim:IdentifiedObject.aliasName>Stoerstellung</cim:IdentifiedObject.aliasName>
+    <cim:ValueToAlias.value rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</cim:ValueToAlias.value>
+    <cim:ValueToAlias.ValueAliasSet rdf:resource="urn:uuid:4a1e39c2-8a5b-4f60-9f1a-c0de00000051"/>
+    <grid:alarmState rdf:datatype="http://www.w3.org/2001/XMLSchema#boolean">true</grid:alarmState>
+  </cim:ValueToAlias>
+
+</rdf:RDF>

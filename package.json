@@ -1,0 +1,139 @@
+{
+  "name": "cim-rdf-lens",
+  "displayName": "CIM/RDF Lens",
+  "description": "Zeigt die Beziehungen zwischen rdf:about-Bloecken und rdf:resource-Referenzen als gestapelte Farbbalken am Code-Rand.",
+  "version": "0.3.0",
+  "publisher": "grid-hackathon",
+  "icon": "icon.png",
+  "license": "MIT",
+  "repository": "https://github.com/calkoe/vscode-cim-rdf-lens",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Visualization"
+  ],
+  "keywords": [
+    "cim",
+    "rdf",
+    "iec 61970",
+    "cgmes"
+  ],
+  "main": "./src/extension.js",
+  "activationEvents": [
+    "onLanguage:xml"
+  ],
+  "extensionKind": [
+    "workspace"
+  ],
+  "scripts": {
+    "test": "node --test \"test/*.test.js\"",
+    "preview": "node scripts/preview.js"
+  },
+  "contributes": {
+    "languages": [
+      {
+        "id": "xml",
+        "extensions": [
+          ".rdf",
+          ".rdfs",
+          ".owl"
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "cimRdfLens.toggle",
+        "title": "CIM/RDF Lens: Balken ein-/ausschalten"
+      },
+      {
+        "command": "cimRdfLens.refresh",
+        "title": "CIM/RDF Lens: Neu einfaerben"
+      }
+    ],
+    "configuration": {
+      "title": "CIM/RDF Lens",
+      "properties": {
+        "cimRdfLens.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Balken am Code-Rand anzeigen."
+        },
+        "cimRdfLens.fileExtensions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            ".rdf"
+          ],
+          "description": "Dateiendungen, fuer die eingefaerbt wird (mit Punkt)."
+        },
+        "cimRdfLens.palette": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "#4f9dff",
+            "#ff8a3d",
+            "#3ec98a",
+            "#c77dff",
+            "#ffd23f",
+            "#ff5c8a",
+            "#2ec5c5",
+            "#a3d94a",
+            "#ff6b5b",
+            "#8b9dff",
+            "#d9a066",
+            "#6fd3ff"
+          ],
+          "description": "Farben fuer die Objekte. Leere Liste faellt auf die eingebaute Palette zurueck."
+        },
+        "cimRdfLens.ancestorOpacity": {
+          "type": "number",
+          "default": 1,
+          "minimum": 0.05,
+          "maximum": 1,
+          "description": "Deckkraft der Vorfahren-Balken. Standard 1: gleiche Farbe wie am Ursprungsblock. Kleinere Werte mischen sich mit dem Hintergrund und erschweren die Zuordnung."
+        },
+        "cimRdfLens.barWidth": {
+          "type": "number",
+          "default": 0.66,
+          "minimum": 0.1,
+          "maximum": 1,
+          "description": "Breite eines Balkens im Verhaeltnis zu seiner Spalte (1 = keine Luecke)."
+        },
+        "cimRdfLens.maxColumns": {
+          "type": "number",
+          "default": 8,
+          "minimum": 2,
+          "maximum": 16,
+          "description": "Hoechstzahl nebeneinander gezeichneter Balken. Tiefere Ketten werden in der Mitte gekuerzt."
+        },
+        "cimRdfLens.underlineIds": {
+          "type": "boolean",
+          "default": true,
+          "description": "UUIDs im Text in der Farbe des gemeinten Objekts unterstreichen. Nur der Unterstrich wird gefaerbt -- die Schriftfarbe bleibt beim XML-Highlighting."
+        },
+        "cimRdfLens.underlineWidth": {
+          "type": "number",
+          "default": 2,
+          "minimum": 1,
+          "maximum": 4,
+          "description": "Staerke des Unterstrichs in Pixeln."
+        },
+        "cimRdfLens.markReferences": {
+          "type": "boolean",
+          "default": false,
+          "description": "Zeilen mit rdf:resource zusaetzlich rechts mit der Farbe des Ziels markieren. Standard aus: der einzelne Zeilenbalken unterbricht die durchgehenden Blockbalken und wiederholt nur, was der farbige Unterstrich unter der UUID schon zeigt."
+        },
+        "cimRdfLens.overviewRuler": {
+          "type": "boolean",
+          "default": true,
+          "description": "Bloecke auch in der Uebersichtsleiste neben der Bildlaufleiste markieren."
+        }
+      }
+    }
+  }
+}

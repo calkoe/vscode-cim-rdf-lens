@@ -1,0 +1,22 @@
+# Dev tooling / build
+build.sh
+scripts/**
+package.py
+
+# Tests
+test/**
+
+# Examples & sample data
+*.example.rdf
+leistungsschalter.example.rdf
+
+# Packaged artifacts
+*.vsix
+
+# Repo/meta
+.git/**
+.gitignore
+.vscode/**
+.vscodeignore
+.claude/**
+**/.DS_Store
