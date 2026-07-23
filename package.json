@@ -1,9 +1,9 @@
 {
   "name": "cim-rdf-lens",
   "displayName": "CIM/RDF Lens",
-  "description": "Zeigt die Beziehungen zwischen rdf:about-Bloecken und rdf:resource-Referenzen als gestapelte Farbbalken am Code-Rand.",
+  "description": "Shows relationships between rdf:about blocks and rdf:resource references as stacked color bars in the code gutter.",
   "version": "0.3.0",
-  "publisher": "grid-hackathon",
+  "publisher": "calkoe",
   "icon": "icon.png",
   "license": "MIT",
   "repository": "https://github.com/calkoe/vscode-cim-rdf-lens",
@@ -44,11 +44,11 @@
     "commands": [
       {
         "command": "cimRdfLens.toggle",
-        "title": "CIM/RDF Lens: Balken ein-/ausschalten"
+        "title": "CIM/RDF Lens: Toggle bars"
       },
       {
         "command": "cimRdfLens.refresh",
-        "title": "CIM/RDF Lens: Neu einfaerben"
+        "title": "CIM/RDF Lens: Refresh colors"
       }
     ],
     "configuration": {
@@ -57,7 +57,7 @@
         "cimRdfLens.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Balken am Code-Rand anzeigen."
+          "description": "Show bars in the code gutter."
         },
         "cimRdfLens.fileExtensions": {
           "type": "array",
@@ -67,7 +67,7 @@
           "default": [
             ".rdf"
           ],
-          "description": "Dateiendungen, fuer die eingefaerbt wird (mit Punkt)."
+          "description": "File extensions to highlight (including dot)."
         },
         "cimRdfLens.palette": {
           "type": "array",
@@ -88,50 +88,50 @@
             "#d9a066",
             "#6fd3ff"
           ],
-          "description": "Farben fuer die Objekte. Leere Liste faellt auf die eingebaute Palette zurueck."
+          "description": "Colors for the objects. Empty list falls back to the built-in palette."
         },
         "cimRdfLens.ancestorOpacity": {
           "type": "number",
           "default": 1,
           "minimum": 0.05,
           "maximum": 1,
-          "description": "Deckkraft der Vorfahren-Balken. Standard 1: gleiche Farbe wie am Ursprungsblock. Kleinere Werte mischen sich mit dem Hintergrund und erschweren die Zuordnung."
+          "description": "Opacity of ancestor bars. Default 1: same color as the source block. Lower values blend with the background and make matching harder."
         },
         "cimRdfLens.barWidth": {
           "type": "number",
           "default": 0.66,
           "minimum": 0.1,
           "maximum": 1,
-          "description": "Breite eines Balkens im Verhaeltnis zu seiner Spalte (1 = keine Luecke)."
+          "description": "Width of a bar relative to its column (1 = no gap)."
         },
         "cimRdfLens.maxColumns": {
           "type": "number",
           "default": 8,
           "minimum": 2,
           "maximum": 16,
-          "description": "Hoechstzahl nebeneinander gezeichneter Balken. Tiefere Ketten werden in der Mitte gekuerzt."
+          "description": "Maximum number of bars drawn side by side. Deeper chains are truncated in the middle."
         },
         "cimRdfLens.underlineIds": {
           "type": "boolean",
           "default": true,
-          "description": "UUIDs im Text in der Farbe des gemeinten Objekts unterstreichen. Nur der Unterstrich wird gefaerbt -- die Schriftfarbe bleibt beim XML-Highlighting."
+          "description": "Underline UUIDs in the text with the color of the referenced object. Only the underline is colored - text color remains as in XML highlighting."
         },
         "cimRdfLens.underlineWidth": {
           "type": "number",
           "default": 2,
           "minimum": 1,
           "maximum": 4,
-          "description": "Staerke des Unterstrichs in Pixeln."
+          "description": "Thickness of the underline in pixels."
         },
         "cimRdfLens.markReferences": {
           "type": "boolean",
           "default": false,
-          "description": "Zeilen mit rdf:resource zusaetzlich rechts mit der Farbe des Ziels markieren. Standard aus: der einzelne Zeilenbalken unterbricht die durchgehenden Blockbalken und wiederholt nur, was der farbige Unterstrich unter der UUID schon zeigt."
+          "description": "Also mark lines with rdf:resource on the right with the target color. Default off: the single line bar breaks the continuous block bars and only repeats what the colored underline under the UUID already shows."
         },
         "cimRdfLens.overviewRuler": {
           "type": "boolean",
           "default": true,
-          "description": "Bloecke auch in der Uebersichtsleiste neben der Bildlaufleiste markieren."
+          "description": "Also mark blocks in the overview ruler beside the scrollbar."
         }
       }
     }
