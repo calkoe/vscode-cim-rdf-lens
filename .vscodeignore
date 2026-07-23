@@ -10,6 +10,9 @@ test/**
 *.example.rdf
 leistungsschalter.example.rdf
 
+# README image (loaded from GitHub via absolute URL, not from the package)
+screenshot1.png
+
 # Packaged artifacts
 *.vsix
 
